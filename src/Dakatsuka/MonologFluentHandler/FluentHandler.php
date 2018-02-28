@@ -18,6 +18,9 @@ class FluentHandler extends AbstractProcessingHandler
      */
     protected $logger;
 
+    /** @var string|null */
+    protected $tagPrefix = null;
+
     /**
      * Initialize Handler
      *
@@ -33,8 +36,7 @@ class FluentHandler extends AbstractProcessingHandler
         $port   = FluentLogger::DEFAULT_LISTEN_PORT,
         $level  = Logger::DEBUG,
         $bubble = true
-    )
-    {
+    ) {
         parent::__construct($level, $bubble);
 
         if (is_null($logger)) {
@@ -44,12 +46,21 @@ class FluentHandler extends AbstractProcessingHandler
         $this->logger = $logger;
     }
 
+    public function setTagPrefix($prefix)
+    {
+        $this->tagPrefix = $prefix;
+    }
+
     /**
      * {@inheritDoc}
      */
     public function write(array $record)
     {
-        $tag  = $record['channel'];
+        $tag  = $this->tagPrefix
+            ? sprintf('%s.%s', $this->tagPrefix, $record['channel'])
+            : $record['channel']
+        ;
+
         $data = array();
         $data['level'] = Logger::getLevelName($record['level']);
         $data['message'] = $record['message'];
