@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.3",
-        "fluent/logger": "0.3.*",
+        "fluent/logger": "~1",
         "monolog/monolog": "~1.6"
     },
     "autoload": {
